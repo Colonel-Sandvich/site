@@ -2,9 +2,9 @@
 import Layout from "src/layouts/Layout.astro";
 ---
 
-<Layout title="Golf Project">
+<Layout title="Golf Project" path="/projects/golf">
   <!-- https://developer.chrome.com/blog/web-audio-autoplay/ -->
-  <script type="module">
+  <script is:inline type="module">
     (function () {
       // An array of all contexts to resume on the page
       const audioContextList = [];
@@ -62,7 +62,7 @@ import Layout from "src/layouts/Layout.astro";
       });
     })();
   </script>
-  <script type="module">
+  <script is:inline type="module">
     import init from "/golf/golf.js";
 
     // Reroute asset loading search directory
@@ -70,7 +70,25 @@ import Layout from "src/layouts/Layout.astro";
     base.href = "/golf/";
     document.head.appendChild(base);
 
-    await init();
+    init().catch((error) => {
+      if (
+        !error.message.startsWith(
+          "Using exceptions for control flow, don't mind me. This isn't actually an error!"
+        )
+      ) {
+        throw error;
+      }
+    });
   </script>
-  <main>Golf!</main>
+
+  <div class="container flex content-between px-4 py-32">
+    <p class="grow basis-0 p-4">
+      The game is able to run thanks to WASM in the browser. If the game does
+      not load try using Chrome or any other Chromium browser. Unfortunately,
+      the game and audio might feel laggy since the wasm is restricted to a
+      single thread.
+    </p>
+    <canvas id="golf-canvas" class="w-[720px]"></canvas>
+    <div class="grow basis-0"></div>
+  </div>
 </Layout>

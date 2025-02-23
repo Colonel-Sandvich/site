@@ -1,50 +1,104 @@
 ---
+import { ClientRouter } from "astro:transitions";
+import GitHubIcon from "src/components/icons/GitHubIcon.astro";
+import LinkedInIcon from "src/components/icons/LinkedInIcon.astro";
+import "../styles/global.css";
+
 interface Props {
   title: string;
+  path?: string;
 }
 
-const { title } = Astro.props;
+const { title, path = "" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <ClientRouter />
   </head>
   <body>
-    <slot />
+    <!-- Background gradient effects -->
+    <div class="fixed inset-0 -z-10">
+      <!-- Sunset gradient -->
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-[#2e1065] via-[#701a75] to-[#0f172a]"
+      >
+      </div>
+
+      <!-- Accent gradients -->
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-transparent via-pink-500/5 to-purple-500/5"
+      >
+      </div>
+      <div
+        class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-pink-500/10 via-transparent to-transparent"
+      >
+      </div>
+
+      <!-- Horizontal line effect -->
+      <div
+        class="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(236, 72, 153, 0.2) 2px,
+            rgba(236, 72, 153, 0.2) 4px
+          )`,
+          backgroundSize: "100% 4px",
+        }}
+      >
+      </div>
+    </div>
+
+    <header
+      class="fixed top-0 w-full z-10 backdrop-blur-sm border-b border-purple-500/20"
+    >
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <a href="/">
+          <h1
+            class="text-2xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent"
+          >
+            Matthew Horrocks@dev:~/portfolio{path}
+          </h1>
+        </a>
+        <nav class="flex items-center gap-6">
+          <a
+            href="https://github.com/Colonel-Sandvich"
+            class="inline-flex items-center text-purple-300 hover:text-pink-500 transition-colors"
+          >
+            <span class="sr-only">GitHub</span>
+            <GitHubIcon class="h-5 w-5" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/matthewhorrocks/"
+            class="inline-flex items-center text-purple-300 hover:text-pink-500 transition-colors"
+          >
+            <span class="sr-only">LinkedIn</span>
+            <LinkedInIcon class="h-5 w-5" />
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="relative min-h-screen">
+      <slot />
+    </main>
+
+    <footer class="border-t border-purple-500/20 py-8">
+      <div class="container mx-auto px-4 text-center text-purple-300/50">
+        <p>
+          © {new Date().getFullYear()} Matthew Horrocks. All rights reserved.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
-<style is:global>
-  :root {
-    --accent: 136, 58, 234;
-    --accent-light: 224, 204, 250;
-    --accent-dark: 49, 10, 101;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      rgb(var(--accent-light)) 30%,
-      white 60%
-    );
-  }
-  html {
-    font-family: system-ui, sans-serif;
-    background: #13151a;
-  }
-  code {
-    font-family:
-      Menlo,
-      Monaco,
-      Lucida Console,
-      Liberation Mono,
-      DejaVu Sans Mono,
-      Bitstream Vera Sans Mono,
-      Courier New,
-      monospace;
-  }
-</style>
