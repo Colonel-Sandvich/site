@@ -62,23 +62,23 @@ import Layout from "src/layouts/Layout.astro";
       });
     })();
   </script>
-  <script is:inline type="module">
-    import init from "/golf/golf.js";
+  <script>
+    function unloadGame() {
+      document.getElementById("golf-frame")?.remove();
+    }
 
-    // Reroute asset loading search directory
-    const base = document.createElement("base");
-    base.href = "/golf/";
-    document.head.appendChild(base);
-
-    init().catch((error) => {
-      if (
-        !error.message.startsWith(
-          "Using exceptions for control flow, don't mind me. This isn't actually an error!"
-        )
-      ) {
-        throw error;
+    function loadGame() {
+      if (document.getElementById("golf-frame")) {
+        return;
       }
-    });
+      const newFrame = document.createElement("iframe");
+      newFrame.id = "golf-frame";
+      newFrame.src = "/golf/index.html";
+      document.body.appendChild(newFrame);
+    }
+
+    window.addEventListener("astro:before-unload", unloadGame);
+    window.addEventListener("astro:page-load", loadGame);
   </script>
 
   <div class="container flex content-between px-4 py-32">
@@ -88,7 +88,15 @@ import Layout from "src/layouts/Layout.astro";
       the game and audio might feel laggy since the wasm is restricted to a
       single thread.
     </p>
-    <canvas id="golf-canvas" class="w-[720px]"></canvas>
-    <div class="grow basis-0"></div>
+    <iframe
+      id="golf-frame"
+      src="/golf/index.html"
+      width="720"
+      height="1216"
+      scrolling="no"></iframe>
+    <p class="grow basis-0 p-4">
+      Angry Birds style controls. Make sure you start a shot from roughly the
+      middle of the game so that your cursor doesn't go out of bounds!
+    </p>
   </div>
 </Layout>
